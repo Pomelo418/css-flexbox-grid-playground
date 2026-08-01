@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Layout Playground</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0e1117;
+  --surface: #161b27;
+  --surface2: #1e253a;
+  --accent: #6c63ff;
+  --accent-hover: #5b53e0;
+  --accent2: #ff6584;
+  --success: #22c55e;
+  --text: #dde4f0;
+  --text-muted: #7a8499;
+  --border: #252d45;
+  --preview-bg: #0b0e18;
+  --code-bg: #090c14;
+  --item-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+
+/* ── Header ── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  height: 50px;
+}
+
+.logo {
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+
+.mode-pill {
+  display: flex;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+  border: 1px solid var(--border);
+}
+
+.mode-btn {
+  padding: 5px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  background: transparent;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.mode-btn.active { background: var(--accent); color: #fff; }
+.mode-btn:not(.active):hover { color: var(--text); }
+
+.header-badge {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 3px 10px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Layout ── */
+.main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 264px;
+  min-width: 264px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  flex-shrink: 0;
+  padding: 14px 14px 24px;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+.section-title {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  margin: 16px 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+.section-title:first-child { margin-top: 0; }
+
+.ctrl-group { margin-bottom: 14px; }
+
+.ctrl-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-family: 'Courier New', monospace;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.opt-btn {
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+.opt-btn:hover { border-color: var(--accent); color: var(--text); background: rgba(108,99,255,0.08); }
+.opt-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.slider-wrap input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+.slider-wrap input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.2);
+  transition: box-shadow 0.15s;
+}
+.slider-wrap input[type="range"]:hover::-webkit-slider-thumb {
+  box-shadow: 0 0 0 5px rgba(108,99,255,0.25);
+}
+.slider-val {
+  font-size: 11px;
+  color: var(--accent);
+  font-family: 'Courier New', monospace;
+  min-width: 38px;
+  text-align: right;
+}
+
+.text-ctrl {
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 6px 9px;
+  font-size: 11.5px;
+  font-family: 'Courier New', monospace;
+  outline: none;
+  transition: border-color 0.15s;
+  margin-bottom: 6px;
+}
+.text-ctrl:focus { border-color: var(--accent); }
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 14px 0;
+}
+
+/* ── Right Panel ── */
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+}
+
+/* ── Preview ── */
+.preview-area {
+  flex: 1;
+  padding: 20px;
+  background: var(--preview-bg);
+  overflow: auto;
+  position: relative;
+}
+
+.preview-container {
+  width: 100%;
+  height: 100%;
+  min-height: 240px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 18px,
+    rgba(255,255,255,0.012) 18px,
+    rgba(255,255,255,0.012) 36px
+  );
+}
+.preview-container::before {
+  content: '.container';
+  position: absolute;
+  top: -11px;
+  left: 14px;
+  background: var(--preview-bg);
+  color: var(--text-muted);
+  font-size: 10px;
+  font-family: 'Courier New', monospace;
+  padding: 0 6px;
+}
+
+#layout-container {
+  width: 100%;
+  height: 100%;
+  transition: all 0.25s ease;
+}
+
+.box {
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+  box-shadow: var(--item-shadow);
+  transition: all 0.25s ease;
+  min-width: 42px;
+  min-height: 42px;
+  position: relative;
+}
+.box::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: rgba(255,255,255,0.08);
+  pointer-events: none;
+}
+
+/* ── Code Panel ── */
+.code-panel {
+  background: var(--code-bg);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+  max-height: 210px;
+  display: flex;
+  flex-direction: column;
+}
+
+.code-header {
+  display: flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  gap: 8px;
+  flex-shrink: 0;
+}
+.code-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  flex: 1;
+}
+.code-dots { display: flex; gap: 5px; }
+.dot {
+  width: 9px; height: 9px; border-radius: 50%;
+}
+.dot-r { background: #ff5f57; }
+.dot-y { background: #febc2e; }
+.dot-g { background: #28c840; }
+
+.copy-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.copy-btn:hover { background: var(--accent); border-color: var(--accent); }
+.copy-btn.copied { background: var(--success); border-color: var(--success); color: #fff; }
+
+#css-output {
+  padding: 12px 16px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow: auto;
+  flex: 1;
+}
+#css-output::-webkit-scrollbar { height: 4px; width: 4px; }
+#css-output::-webkit-scrollbar-track { background: transparent; }
+#css-output::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* syntax highlight tokens */
+.t-sel  { color: #f8a4c8; }
+.t-prop { color: #7dd3fc; }
+.t-val  { color: #86efac; }
+.t-num  { color: #fdba74; }
+.t-unit { color: #a78bfa; }
+.t-punc { color: #64748b; }
+.t-key  { color: #c4b5fd; }
+
+/* Mode visibility */
+[data-mode="grid"] .flex-only { display: none !important; }
+[data-mode="flexbox"] .grid-only { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">◈ Layout Playground</div>
+  <div class="mode-pill">
+    <button class="mode-btn active" id="btn-flexbox" onclick="setMode('flexbox')">Flexbox</button>
+    <button class="mode-btn" id="btn-grid" onclick="setMode('grid')">Grid</button>
+  </div>
+  <span class="header-badge" id="mode-badge">display: flex</span>
+</header>
+
+<div class="main" id="app" data-mode="flexbox">
+
+  <!-- ══ SIDEBAR ══ -->
+  <div class="sidebar">
+
+    <!-- FLEXBOX SECTION -->
+    <div class="flex-only">
+      <div class="section-title">Flexbox</div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">flex-direction</span>
+        <div class="btn-group" data-prop="flexDirection">
+          <button class="opt-btn active" data-val="row">row</button>
+          <button class="opt-btn" data-val="row-reverse">row-reverse</button>
+          <button class="opt-btn" data-val="column">column</button>
+          <button class="opt-btn" data-val="column-reverse">col-reverse</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">flex-wrap</span>
+        <div class="btn-group" data-prop="flexWrap">
+          <button class="opt-btn active" data-val="nowrap">nowrap</button>
+          <button class="opt-btn" data-val="wrap">wrap</button>
+          <button class="opt-btn" data-val="wrap-reverse">wrap-reverse</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">justify-content</span>
+        <div class="btn-group" data-prop="justifyContent">
+          <button class="opt-btn active" data-val="flex-start">flex-start</button>
+          <button class="opt-btn" data-val="flex-end">flex-end</button>
+          <button class="opt-btn" data-val="center">center</button>
+          <button class="opt-btn" data-val="space-between">space-between</button>
+          <button class="opt-btn" data-val="space-around">space-around</button>
+          <button class="opt-btn" data-val="space-evenly">space-evenly</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">align-items</span>
+        <div class="btn-group" data-prop="alignItems">
+          <button class="opt-btn" data-val="flex-start">flex-start</button>
+          <button class="opt-btn" data-val="flex-end">flex-end</button>
+          <button class="opt-btn" data-val="center">center</button>
+          <button class="opt-btn active" data-val="stretch">stretch</button>
+          <button class="opt-btn" data-val="baseline">baseline</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">align-content</span>
+        <div class="btn-group" data-prop="alignContent">
+          <button class="opt-btn active" data-val="normal">normal</button>
+          <button class="opt-btn" data-val="flex-start">flex-start</button>
+          <button class="opt-btn" data-val="flex-end">flex-end</button>
+          <button class="opt-btn" data-val="center">center</button>
+          <button class="opt-btn" data-val="space-between">space-between</button>
+          <button class="opt-btn" data-val="space-around">space-around</button>
+          <button class="opt-btn" data-val="stretch">stretch</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">flex-grow (items)</span>
+        <div class="btn-group" data-prop="flexGrow">
+          <button class="opt-btn active" data-val="0">0 — off</button>
+          <button class="opt-btn" data-val="1">1 — on</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">item sizes</span>
+        <div class="btn-group" data-prop="itemSize">
+          <button class="opt-btn active" data-val="equal">equal</button>
+          <button class="opt-btn" data-val="varied">varied</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GRID SECTION -->
+    <div class="grid-only">
+      <div class="section-title">Grid</div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">grid-template-columns</span>
+        <input class="text-ctrl" id="gtc-input" value="repeat(3, 1fr)" oninput="setGridProp('gtc', this.value)">
+        <div class="btn-group">
+          <button class="opt-btn" onclick="applyGTC('repeat(2, 1fr)')">2-col</button>
+          <button class="opt-btn" onclick="applyGTC('repeat(3, 1fr)')">3-col</button>
+          <button class="opt-btn" onclick="applyGTC('repeat(4, 1fr)')">4-col</button>
+          <button class="opt-btn" onclick="applyGTC('1fr 2fr 1fr')">1-2-1</button>
+          <button class="opt-btn" onclick="applyGTC('repeat(auto-fill, minmax(80px, 1fr))')">auto-fill</button>
+          <button class="opt-btn" onclick="applyGTC('200px 1fr')">fixed+fr</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">grid-template-rows</span>
+        <input class="text-ctrl" id="gtr-input" value="auto" oninput="setGridProp('gtr', this.value)">
+        <div class="btn-group">
+          <button class="opt-btn" onclick="applyGTR('auto')">auto</button>
+          <button class="opt-btn" onclick="applyGTR('repeat(2, 80px)')">2×80px</button>
+          <button class="opt-btn" onclick="applyGTR('80px auto')">px+auto</button>
+          <button class="opt-btn" onclick="applyGTR('repeat(3, 1fr)')">3-row</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">justify-items</span>
+        <div class="btn-group" data-prop="justifyItems">
+          <button class="opt-btn active" data-val="stretch">stretch</button>
+          <button class="opt-btn" data-val="start">start</button>
+          <button class="opt-btn" data-val="end">end</button>
+          <button class="opt-btn" data-val="center">center</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">align-items</span>
+        <div class="btn-group" data-prop="gridAlignItems">
+          <button class="opt-btn active" data-val="stretch">stretch</button>
+          <button class="opt-btn" data-val="start">start</button>
+          <button class="opt-btn" data-val="end">end</button>
+          <button class="opt-btn" data-val="center">center</button>
+        </div>
+      </div>
+
+      <div class="ctrl-group">
+        <span class="ctrl-label">justify-content</span>
+        <div class="btn-group" data-prop="gridJC">
+          <button class="opt-btn active" data-val="start">start</button>
+          <button class="opt-btn" data-val="end">end</button>
+          <button class="opt-btn" data-val="center">center</button>
+          <button class="opt-btn" data-val="space-between">space-between</button>
+          <button class="opt-btn" data-val="space-around">space-around</button>
+          <button class="opt-btn" data-val="space-evenly">space-evenly</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHARED -->
+    <div class="divider"></div>
+    <div class="section-title">Items</div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">gap</span>
+      <div class="slider-wrap">
+        <input type="range" id="gap-slider" min="0" max="40" value="8" oninput="setGap(this.value)">
+        <span class="slider-val" id="gap-val">8px</span>
+      </div>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">item count</span>
+      <div class="slider-wrap">
+        <input type="range" id="count-slider" min="1" max="12" value="6" oninput="setCount(this.value)">
+        <span class="slider-val" id="count-val">6</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ RIGHT PANEL ══ -->
+  <div class="right-panel">
+
+    <div class="preview-area">
+      <div class="preview-container">
+        <div id="layout-container"></div>
+      </div>
+    </div>
+
+    <div class="code-panel">
+      <div class="code-header">
+        <div class="code-dots">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+        </div>
+        <span class="code-label">Generated CSS</span>
+        <button class="copy-btn" id="copy-btn" onclick="copyCSS()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          Copy CSS
+        </button>
+      </div>
+      <div id="css-output"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* ── State ── */
+const S = {
+  mode: 'flexbox',
+  // flex
+  flexDirection: 'row',
+  flexWrap: 'nowrap',
+  justifyContent: 'flex-start',
+  alignItems: 'stretch',
+  alignContent: 'normal',
+  flexGrow: '0',
+  itemSize: 'equal',
+  // grid
+  gtc: 'repeat(3, 1fr)',
+  gtr: 'auto',
+  justifyItems: 'stretch',
+  gridAlignItems: 'stretch',
+  gridJC: 'start',
+  // shared
+  gap: 8,
+  count: 6,
+};
+
+const PALETTE = [
+  '#6c63ff','#ff6584','#43c59e','#f59e0b','#38bdf8',
+  '#c084fc','#fb7185','#34d399','#60a5fa','#f472b6',
+  '#4ade80','#fb923c'
+];
+
+const VARIED_SIZES = [
+  [64,64],[96,72],[72,96],[80,56],[56,88],[100,64],
+  [76,76],[60,92],[88,60],[96,88],[68,56],[56,100]
+];
+
+/* ── Wire up all btn-group buttons ── */
+document.querySelectorAll('.btn-group[data-prop]').forEach(group => {
+  const prop = group.dataset.prop;
+  group.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      group.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      S[prop] = btn.dataset.val;
+      update();
+    });
+  });
+});
+
+/* ── Controls ── */
+function setMode(m) {
+  S.mode = m;
+  document.getElementById('app').dataset.mode = m;
+  document.getElementById('btn-flexbox').classList.toggle('active', m === 'flexbox');
+  document.getElementById('btn-grid').classList.toggle('active', m === 'grid');
+  document.getElementById('mode-badge').textContent = m === 'flexbox' ? 'display: flex' : 'display: grid';
+  update();
+}
+
+function setGap(v) {
+  S.gap = +v;
+  document.getElementById('gap-val').textContent = v + 'px';
+  update();
+}
+
+function setCount(v) {
+  S.count = +v;
+  document.getElementById('count-val').textContent = v;
+  update();
+}
+
+function setGridProp(k, v) {
+  S[k] = v;
+  update();
+}
+
+function applyGTC(v) {
+  S.gtc = v;
+  document.getElementById('gtc-input').value = v;
+  update();
+}
+
+function applyGTR(v) {
+  S.gtr = v;
+  document.getElementById('gtr-input').value = v;
+  update();
+}
+
+/* ── Render ── */
+function renderBoxes() {
+  const c = document.getElementById('layout-container');
+  c.innerHTML = '';
+  for (let i = 0; i < S.count; i++) {
+    const box = document.createElement('div');
+    box.className = 'box';
+    box.textContent = i + 1;
+    box.style.background = PALETTE[i % PALETTE.length];
+
+    if (S.mode === 'flexbox' && S.itemSize === 'varied') {
+      const [w, h] = VARIED_SIZES[i % VARIED_SIZES.length];
+      box.style.width = w + 'px';
+      box.style.height = h + 'px';
+    } else if (S.mode === 'flexbox') {
+      box.style.padding = '18px 22px';
+    } else {
+      // grid — let grid handle sizing, just ensure min height
+      box.style.minHeight = '56px';
+    }
+    c.appendChild(box);
+  }
+}
+
+function applyContainer() {
+  const c = document.getElementById('layout-container');
+
+  if (S.mode === 'flexbox') {
+    Object.assign(c.style, {
+      display: 'flex',
+      flexDirection: S.flexDirection,
+      flexWrap: S.flexWrap,
+      justifyContent: S.justifyContent,
+      alignItems: S.alignItems,
+      alignContent: S.alignContent,
+      gap: S.gap + 'px',
+      width: '100%',
+      height: '100%',
+      // clear grid props
+      gridTemplateColumns: '',
+      gridTemplateRows: '',
+      justifyItems: '',
+    });
+    c.querySelectorAll('.box').forEach(b => { b.style.flexGrow = S.flexGrow; });
+  } else {
+    Object.assign(c.style, {
+      display: 'grid',
+      gridTemplateColumns: S.gtc,
+      gridTemplateRows: S.gtr,
+      justifyItems: S.justifyItems,
+      alignItems: S.gridAlignItems,
+      justifyContent: S.gridJC,
+      gap: S.gap + 'px',
+      width: '100%',
+      minHeight: '100%',
+      // clear flex props
+      flexDirection: '',
+      flexWrap: '',
+      justifyContent: S.gridJC,
+      alignContent: '',
+      flexGrow: '',
+    });
+  }
+}
+
+/* ── CSS Generation ── */
+function buildCSS() {
+  const lines = [];
+
+  if (S.mode === 'flexbox') {
+    lines.push(['.container', '{']);
+    lines.push(['  display', 'flex']);
+    lines.push(['  flex-direction', S.flexDirection]);
+    if (S.flexWrap !== 'nowrap') lines.push(['  flex-wrap', S.flexWrap]);
+    lines.push(['  justify-content', S.justifyContent]);
+    lines.push(['  align-items', S.alignItems]);
+    if (S.alignContent !== 'normal') lines.push(['  align-content', S.alignContent]);
+    lines.push(['  gap', S.gap + 'px']);
+    lines.push(['}', '']);
+
+    if (S.flexGrow !== '0') {
+      lines.push(['', '']);
+      lines.push(['.item', '{']);
+      lines.push(['  flex-grow', S.flexGrow]);
+      lines.push(['}', '']);
+    }
+  } else {
+    lines.push(['.container', '{']);
+    lines.push(['  display', 'grid']);
+    lines.push(['  grid-template-columns', S.gtc]);
+    if (S.gtr !== 'auto') lines.push(['  grid-template-rows', S.gtr]);
+    if (S.justifyItems !== 'stretch') lines.push(['  justify-items', S.justifyItems]);
+    if (S.gridAlignItems !== 'stretch') lines.push(['  align-items', S.gridAlignItems]);
+    if (S.gridJC !== 'start') lines.push(['  justify-content', S.gridJC]);
+    lines.push(['  gap', S.gap + 'px']);
+    lines.push(['}', '']);
+  }
+
+  return lines;
+}
+
+/* ── Syntax Highlight ── */
+function tokenize(lines) {
+  return lines.map(([k, v]) => {
+    if (k === '{') return `<span class="t-punc">{</span>`;
+    if (k === '}') return `<span class="t-punc">}</span>`;
+    if (k === '') return '';
+
+    if (k.startsWith('.')) {
+      if (v === '{') {
+        return `<span class="t-sel">${k}</span> <span class="t-punc">{</span>`;
+      }
+      return `<span class="t-sel">${k}</span>`;
+    }
+
+    // property: value;
+    const valStr = colorizeValue(v);
+    return `  <span class="t-prop">${k}</span><span class="t-punc">:</span> ${valStr}<span class="t-punc">;</span>`;
+  }).join('\n');
+}
+
+function colorizeValue(v) {
+  if (!v) return '';
+  // numbers with units
+  return v.replace(/(\d+)(px|fr|%|em|rem)/g, '<span class="t-num">$1</span><span class="t-unit">$2</span>')
+          .replace(/\b(flex|grid|repeat|auto-fill|auto-fit|minmax|auto|none|normal)\b/g, '<span class="t-key">$1</span>')
+          .replace(/(flex-start|flex-end|space-between|space-around|space-evenly|row-reverse|column-reverse|wrap-reverse|nowrap|stretch|baseline|center|start|end|row|column|wrap)/g, '<span class="t-val">$1</span>');
+}
+
+/* ── Update cycle ── */
+function update() {
+  renderBoxes();
+  applyContainer();
+  const lines = buildCSS();
+  document.getElementById('css-output').innerHTML = tokenize(lines);
+}
+
+/* ── Copy ── */
+async function copyCSS() {
+  const plain = buildCSS().map(([k, v]) => {
+    if (k === '{' || k === '}') return k;
+    if (k === '') return '';
+    if (k.startsWith('.')) return v === '{' ? `${k} {` : k;
+    return `  ${k}: ${v};`;
+  }).join('\n');
+
+  const btn = document.getElementById('copy-btn');
+  try {
+    await navigator.clipboard.writeText(plain);
+  } catch {
+    const ta = Object.assign(document.createElement('textarea'), { value: plain });
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+  }
+
+  btn.classList.add('copied');
+  btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Copied!`;
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> Copy CSS`;
+  }, 2000);
+}
+
+/* ── Boot ── */
+update();
+</script>
+</body>
+</html>
